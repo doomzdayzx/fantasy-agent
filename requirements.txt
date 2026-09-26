@@ -1,0 +1,6 @@
+yahoo_oauth
+yahoo_fantasy_api
+nflreadpy
+polars
+requests
+mcp[cli]

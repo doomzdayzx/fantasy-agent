@@ -1,0 +1,15 @@
+# Secrets - Yahoo Client ID/Secret and OAuth tokens. Never commit.
+oauth2.json
+*.env
+.env
+
+# Python environment and build artifacts
+.venv/
+__pycache__/
+*.pyc
+
+# Local data: cached API responses, league snapshots and reports.
+# These contain Yahoo league data (incl. other managers' teams) and stay on this PC.
+cache/
+leagues.json
+reports/
