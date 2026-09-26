@@ -110,7 +110,8 @@ def player_usage(name, team=None, last_n=4):
     if team:
         rows = rows.filter(pl.col("team") == team.upper())
     if rows.is_empty():
-        return {"error": f"no {SEASON} stats found for '{name}'"}
+        # No games played yet (injured, suspended, inactive...) - still report status so the caller knows why
+        return {"error": f"no {SEASON} stats found for '{name}'", "status": _sleeper_status(name, team)}
     if rows["player_id"].n_unique() > 3:  # too vague - ask for a more specific name instead of dumping stats
         who = rows.unique("player_id").select(["player_display_name", "position", "team"]).to_dicts()
         return {"error": f"'{name}' matches {len(who)} players - use a full name and/or team", "matches": who[:15]}
