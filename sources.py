@@ -37,6 +37,13 @@ def _stats():
 def _snaps():
     return _cached("snaps", 3600, lambda: nfl.load_snap_counts([SEASON]))
 
+def _pfr_ids():
+    """Stats use gsis_id, snap counts use pfr_id; this maps one to the other (names differ, e.g. Greg/Gregory)."""
+    def load():
+        p = nfl.load_players().select(["gsis_id", "pfr_id"]).drop_nulls()
+        return dict(zip(p["gsis_id"].to_list(), p["pfr_id"].to_list()))
+    return _cached("pfr_ids", 86400, load)
+
 def _schedule():
     return _cached("sched", 3600, lambda: nfl.load_schedules([SEASON]))
 
@@ -150,7 +157,10 @@ def player_usage(name, team=None, last_n=4, scoring=None):
             if scoring:
                 w["league_pts"] = league_points(r, scoring)
             weekly.append(w)
-        snap_rows = (snaps.filter((pl.col("_n") == _norm(first["player_display_name"])) & (pl.col("team") == first["team"]))
+        pfr = _pfr_ids().get(pid[0] if isinstance(pid, tuple) else pid)
+        match = (pl.col("pfr_player_id") == pfr) if pfr else \
+                ((pl.col("_n") == _norm(first["player_display_name"])) & (pl.col("team") == first["team"]))
+        snap_rows = (snaps.filter(match)
                           .sort("week").tail(last_n)
                           .select(["week", pl.max_horizontal("offense_pct", "defense_pct").alias("pct")]).to_dicts())
         players.append({"name": first["player_display_name"], "position": first["position"],
