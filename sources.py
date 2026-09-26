@@ -141,8 +141,11 @@ def _sleeper_players():
         f.write_text(r.text, encoding="utf-8")
     return _cached("sleeper", 3600, lambda: json.loads(f.read_text(encoding="utf-8")))
 
+SLEEPER_TEAM = {"LA": "LAR"}  # nflverse team code -> Sleeper team code, where they differ
+
 def _sleeper_status(name, team=None):
     key = _norm(name)
+    team = SLEEPER_TEAM.get(team, team)
     for p in _sleeper_players().values():
         if _norm(p.get("full_name")) == key and (team is None or p.get("team") == team):
             return {"injury": p.get("injury_status") or "healthy", "body_part": p.get("injury_body_part"),
