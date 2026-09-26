@@ -13,3 +13,6 @@ __pycache__/
 cache/
 leagues.json
 reports/
+
+# Machine-specific config (absolute paths to this PC's Python)
+.mcp.json

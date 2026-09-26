@@ -1,0 +1,20 @@
+{
+  "leagues": [
+    {
+      "id": "work",
+      "name": "Office League",
+      "updated": "2026-09-26",
+      "scoring": "half-ppr",
+      "scoring_notes": "4 pt passing TD, -2 INT, 6 pt all other TDs",
+      "waivers": "FAAB $100, $73 left",
+      "roster_slots": ["QB", "WR", "WR", "RB", "RB", "TE", "W/R/T", "K", "DEF", "BN", "BN", "BN", "BN", "BN", "BN", "IR"],
+      "my_team": [
+        {"name": "Josh Allen", "pos": "QB", "team": "BUF", "slot": "QB"},
+        {"name": "Kyren Williams", "pos": "RB", "team": "LA", "slot": "RB"},
+        {"name": "Jameson Williams", "pos": "WR", "team": "DET", "slot": "BN"}
+      ],
+      "this_week_opponent": "Team Name (optional)",
+      "notes": "Anything else worth knowing, e.g. 'trying to trade for a RB'"
+    }
+  ]
+}
