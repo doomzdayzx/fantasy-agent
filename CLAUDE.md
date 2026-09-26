@@ -21,6 +21,8 @@ start with `list_leagues`, then `get_league` for rosters, scoring and slots.
 - Injury status: check `get_player_usage` status AND search for the latest practice report.
   Questionable players in late games are risky if the backup is also on my bench.
 - Lego League uses IDP (individual defensive players) and keepers — value LBs by tackle volume.
+- Always read a league's `lineup_rules` and obey them before recommending any lineup. Lego League's
+  2 QB slots must be the SAME NFL team's starter + backup — compare QB *pairs*, never individual QBs.
 
 ## Output style
 - I'm on **Pacific time**; give times in PT.
