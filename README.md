@@ -45,6 +45,9 @@ decisions. I make all roster moves myself in the Yahoo app.
 | `yahoo_client.py` | Read-only Yahoo Fantasy API client (leagues, rosters, settings, free agents) |
 | `login.py` | One-time OAuth 2.0 authorization requesting the `fspt-r` scope |
 | `diagnose.py` | Connectivity check against basic API endpoints |
+| `sources.py` | Non-Yahoo data: player usage and snap %, schedules and Vegas lines, weather, Sleeper trends |
+| `stadiums.json` | Stadium coordinates (incl. international venues) for kickoff weather |
+| `smoke_test.py` | End-to-end check that every data source still works |
 | `requirements.txt` | Python dependencies |
 
 ## Setup
