@@ -25,8 +25,9 @@ start with `list_leagues`, then `get_league` for rosters, scoring and slots.
 - Lego League: IDP + keepers. Its IDP scoring rewards big plays (sack 3, INT 4, FF 2, PD 1) over
   tackles (solo 0.5) — favor pass rushers and ball-hawking DBs over tackle-volume LBs.
   Rushing is 1 pt / 5 yds (double normal) — workhorse RBs and running QBs gain value.
-- Always read a league's `lineup_rules` and obey them before recommending any lineup. Lego League's
-  2 QB slots must be the SAME NFL team's starter + backup — compare QB *pairs*, never individual QBs.
+- Always read a league's `lineup_rules` and obey them before recommending any lineup. Lego League:
+  only ONE starting QB may play; the 2nd QB slot is that same team's backup or left empty. So pick
+  the single best starting QB (mine or on waivers); a backup only adds insurance, not points.
 
 ## Output style
 - I'm on **Pacific time**; give times in PT.
