@@ -37,10 +37,12 @@ def get_week_games(week: int = 0) -> dict:
     return _quiet(sources.week_games, week or None)
 
 @mcp.tool()
-def get_player_usage(name: str, team: str = "", last_n: int = 4) -> dict:
+def get_player_usage(name: str, team: str = "", last_n: int = 4, league_id: str = "") -> dict:
     """A player's recent weekly stats, PPR points, target share, snap %, and injury status/depth chart.
-    Pass team (e.g. 'BUF') if the name is common."""
-    return _quiet(sources.player_usage, name, team or None, last_n)
+    Pass team (e.g. 'BUF') if the name is common. Pass league_id to add league_pts: the player's
+    actual points under that league's custom scoring (use this, not fantasy_points_ppr, when available)."""
+    scoring = league_data.get_league(league_id).get("scoring_rules") if league_id else None
+    return _quiet(sources.player_usage, name, team or None, last_n, scoring)
 
 @mcp.tool()
 def get_trending(kind: str = "add", hours: int = 48, limit: int = 30) -> list:

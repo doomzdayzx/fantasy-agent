@@ -94,14 +94,35 @@ def _game_weather(g, stadium):
         out["note"] = "retractable roof - open/closed decided on game day"
     return out
 
+# ---------- league scoring ----------
+# Scoring stats that are sums of several nflverse columns
+DERIVED = {
+    "two_pt": ["passing_2pt_conversions", "rushing_2pt_conversions", "receiving_2pt_conversions"],
+    "return_yards": ["punt_return_yards", "kickoff_return_yards"],
+    "def_blocks": ["def_fg_blocks", "def_punt_blocks", "def_pat_blocks"],
+    # offensive fumbles only (runs, catches, sacks) - matches nflverse; excludes kick/punt return fumbles
+    "fumbles_lost": ["rushing_fumbles_lost", "receiving_fumbles_lost", "sack_fumbles_lost"],
+}
+
+def league_points(row, rules):
+    """Fantasy points for one player-week under a league's scoring_rules ({stat: points per unit})."""
+    total = 0.0
+    for stat, pts in rules.items():
+        if stat.startswith("_"):
+            continue
+        total += pts * sum((row.get(c) or 0) for c in DERIVED.get(stat, [stat]))
+    return round(total, 2)
+
 # ---------- player usage (nflverse) ----------
 USAGE_COLS = ["week", "team", "opponent_team", "fantasy_points_ppr", "targets", "target_share",
               "air_yards_share", "receptions", "receiving_yards", "receiving_tds", "carries",
-              "rushing_yards", "rushing_tds", "attempts", "passing_yards", "passing_tds",
-              "passing_interceptions"]
+              "rushing_yards", "rushing_tds", "attempts", "completions", "passing_yards", "passing_tds",
+              "passing_interceptions", "fg_made", "fg_att", "def_tackles_solo", "def_tackle_assists",
+              "def_sacks", "def_interceptions", "def_pass_defended", "def_fumbles_forced"]
 
-def player_usage(name, team=None, last_n=4):
-    """Recent weekly usage for a player: stats, target share, snap %. `team` breaks name ties."""
+def player_usage(name, team=None, last_n=4, scoring=None):
+    """Recent weekly usage for a player: stats, target share, snap %. `team` breaks name ties.
+    Pass a league's scoring_rules as `scoring` to add league_pts (points under that league's rules)."""
     key = _norm(name)
     stats = _stats().with_columns(pl.col("player_display_name").map_elements(_norm, return_dtype=pl.Utf8).alias("_n"))
     rows = stats.filter(pl.col("_n") == key)
@@ -122,13 +143,19 @@ def player_usage(name, team=None, last_n=4):
         grp = grp.sort("week").tail(last_n)
         first = grp.row(0, named=True)
         cols = [c for c in USAGE_COLS if c in grp.columns]
-        weekly = [{k: (round(v, 3) if isinstance(v, float) else v) for k, v in r.items() if v not in (None, 0, 0.0) or k == "week"}
-                  for r in grp.select(cols).to_dicts()]
+        weekly = []
+        for r in grp.to_dicts():
+            w = {k: (round(r[k], 3) if isinstance(r[k], float) else r[k])
+                 for k in cols if r[k] not in (None, 0, 0.0) or k == "week"}
+            if scoring:
+                w["league_pts"] = league_points(r, scoring)
+            weekly.append(w)
         snap_rows = (snaps.filter((pl.col("_n") == _norm(first["player_display_name"])) & (pl.col("team") == first["team"]))
-                          .sort("week").tail(last_n).select(["week", "offense_pct"]).to_dicts())
+                          .sort("week").tail(last_n)
+                          .select(["week", pl.max_horizontal("offense_pct", "defense_pct").alias("pct")]).to_dicts())
         players.append({"name": first["player_display_name"], "position": first["position"],
                         "team": grp["team"][-1], "weekly": weekly,
-                        "snap_pct": {r["week"]: round(r["offense_pct"] * 100) for r in snap_rows},
+                        "snap_pct": {r["week"]: round(r["pct"] * 100) for r in snap_rows},  # offense or defense, whichever they play
                         "status": _sleeper_status(first["player_display_name"], grp["team"][-1])})
     return players[0] if len(players) == 1 else {"multiple_matches": players}
 

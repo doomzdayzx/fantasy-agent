@@ -1,5 +1,6 @@
 # mcp_check.py - talk to server.py the same way Claude does, to prove the tools work end to end.
 import asyncio
+import json
 import sys
 from pathlib import Path
 
@@ -10,10 +11,10 @@ HERE = Path(__file__).parent
 
 CALLS = [
     ("list_leagues", {}),
-    ("get_league", {"league_id": "work"}),
     ("get_current_week", {}),
-    ("get_player_usage", {"name": "Jameson Williams"}),
     ("get_trending", {"kind": "add", "limit": 3}),
+    ("get_player_usage", {"name": "Kirk Cousins", "team": "LV", "league_id": "lego"}),
+    ("get_player_usage", {"name": "Greg Rousseau", "team": "BUF", "league_id": "lego"}),
     ("get_week_games", {}),
 ]
 
@@ -27,6 +28,11 @@ async def main():
             for name, args in CALLS:
                 r = await session.call_tool(name, args)
                 text = " ".join(getattr(c, "text", "") for c in r.content)
-                print(f"\n{name}({args}) error={r.is_error}\n  {text[:300]}")
+                try:  # compact the JSON so output is readable
+                    text = json.dumps(json.loads(text))
+                except ValueError:
+                    pass
+                print(f"\n{name}({args}) error={r.is_error}\n  {text[:500]}")
 
-asyncio.run(main())
+if __name__ == "__main__":
+    asyncio.run(main())

@@ -20,7 +20,11 @@ start with `list_leagues`, then `get_league` for rosters, scoring and slots.
   Dome/"indoors" games are unaffected. Retractable roofs are decided on game day.
 - Injury status: check `get_player_usage` status AND search for the latest practice report.
   Questionable players in late games are risky if the backup is also on my bench.
-- Lego League uses IDP (individual defensive players) and keepers — value LBs by tackle volume.
+- When a league has `scoring_rules`, always call `get_player_usage` with its `league_id` and compare
+  players on `league_pts` (their real points under that league's scoring), not generic PPR.
+- Lego League: IDP + keepers. Its IDP scoring rewards big plays (sack 3, INT 4, FF 2, PD 1) over
+  tackles (solo 0.5) — favor pass rushers and ball-hawking DBs over tackle-volume LBs.
+  Rushing is 1 pt / 5 yds (double normal) — workhorse RBs and running QBs gain value.
 - Always read a league's `lineup_rules` and obey them before recommending any lineup. Lego League's
   2 QB slots must be the SAME NFL team's starter + backup — compare QB *pairs*, never individual QBs.
 
