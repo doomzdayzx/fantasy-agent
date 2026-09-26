@@ -1,7 +1,7 @@
 ---
-description: Start/sit recommendations for this week (one league or all)
+description: Start/sit recommendations for this week. Usage: /lineup [league...] e.g. /lineup lego
 ---
-League: $ARGUMENTS (if blank, do all leagues from list_leagues).
+Leagues: "$ARGUMENTS". Match loosely against `list_leagues` ids and names (e.g. "lego", "Lego League", "todds", "work league"); several may be given. If blank, do all leagues. If nothing matches, show the league list and ask.
 
 1. `get_league` for the roster, slots and scoring. Skip `locked` players (already played).
 2. `get_week_games` once for kickoff times, implied team totals and weather.

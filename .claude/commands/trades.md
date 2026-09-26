@@ -1,7 +1,7 @@
 ---
-description: Buy-low / sell-high trade targets
+description: Buy-low / sell-high trade targets. Usage: /trades [league...] e.g. /trades work
 ---
-For each league (or $ARGUMENTS if given):
+Leagues: "$ARGUMENTS". Match loosely against `list_leagues` ids and names (e.g. "lego", "Lego League", "todds", "work league"); several may be given. If blank, do all leagues. If nothing matches, show the league list and ask. Then for each selected league:
 
 1. Sell-high: players on my roster whose points outpace their usage (TD-dependent, falling
    snap %, tough upcoming schedule, returning teammate).

@@ -1,7 +1,7 @@
 ---
-description: Weekly waiver wire + free agent report
+description: Waiver wire + free agent report. Usage: /waivers [league...] e.g. /waivers todd
 ---
-For each league (or $ARGUMENTS if given):
+Leagues: "$ARGUMENTS". Match loosely against `list_leagues` ids and names (e.g. "lego", "Lego League", "todds", "work league"); several may be given. If blank, do all leagues. If nothing matches, show the league list and ask. Then for each selected league:
 
 1. `get_league`: find weak spots — injured/IR starters, low-usage starters, thin positions, bye weeks ahead.
 2. `get_trending` (adds, 48h) and web-search this week's waiver-wire consensus.
